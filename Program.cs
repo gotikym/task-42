@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 internal class Program
@@ -132,22 +132,12 @@ internal class Program
             {
                 Card currentCard = _deck[random.Next(firstIndexCard, lastIndexCard)];
 
-                if (IsRepeat(currentCard) == false)
+                if (_hand.Contains(currentCard) == false)
                 {
-                    AddCard(currentCard);
+                    _hand.Add(currentCard);
                     isTake = true;
                 }
             }
-        }
-
-        public bool IsRepeat(Card currentCard)
-        {
-            return _hand.Contains(currentCard);
-        }
-
-        public void AddCard(Card currentCard)
-        {
-            _hand.Add(currentCard);
         }
     }
 
