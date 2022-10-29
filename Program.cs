@@ -5,108 +5,42 @@ internal class Program
 {
     static void Main(string[] args)
     {
-        Deck deck = new Deck();
-        Player player = new Player();
-
-        deck.AddCard();
-
-        deck.IssueCard(player.Attemps);
-
-        deck.ShowHand();
+        Croupier croupier = new Croupier();
+        croupier.Game();
     }
 
-    class Deck
+    class Croupier
     {
-        Random random = new Random();
-        private List<Card> _deck = new List<Card>();
-        private List<Card> _hand = new List<Card>();
+        Player player = new Player();
+        Deck deck = new Deck();
 
-        public Deck()
-        {
-            _deck = new List<Card>();
-        }
-
-        public void AddCard()
-        {
-            _deck.Add(new Card("2", "Hearts"));
-            _deck.Add(new Card("3", "Hearts"));
-            _deck.Add(new Card("4", "Hearts"));
-            _deck.Add(new Card("5", "Hearts"));
-            _deck.Add(new Card("6", "Hearts"));
-            _deck.Add(new Card("7", "Hearts"));
-            _deck.Add(new Card("8", "Hearts"));
-            _deck.Add(new Card("9", "Hearts"));
-            _deck.Add(new Card("10", "Hearts"));
-            _deck.Add(new Card("Jack", "Hearts"));
-            _deck.Add(new Card("Queen", "Hearts"));
-            _deck.Add(new Card("King", "Hearts"));
-            _deck.Add(new Card("Ace", "Hearts"));
-            _deck.Add(new Card("2", "Diamonds"));
-            _deck.Add(new Card("3", "Diamonds"));
-            _deck.Add(new Card("4", "Diamonds"));
-            _deck.Add(new Card("5", "Diamonds"));
-            _deck.Add(new Card("6", "Diamonds"));
-            _deck.Add(new Card("7", "Diamonds"));
-            _deck.Add(new Card("8", "Diamonds"));
-            _deck.Add(new Card("9", "Diamonds"));
-            _deck.Add(new Card("10", "Diamonds"));
-            _deck.Add(new Card("Jack", "Diamonds"));
-            _deck.Add(new Card("Queen", "Diamonds"));
-            _deck.Add(new Card("King", "Diamonds"));
-            _deck.Add(new Card("Ace", "Diamonds"));
-            _deck.Add(new Card("2", "Spades"));
-            _deck.Add(new Card("3", "Spades"));
-            _deck.Add(new Card("4", "Spades"));
-            _deck.Add(new Card("5", "Spades"));
-            _deck.Add(new Card("6", "Spades"));
-            _deck.Add(new Card("7", "Spades"));
-            _deck.Add(new Card("8", "Spades"));
-            _deck.Add(new Card("9", "Spades"));
-            _deck.Add(new Card("10", "Spades"));
-            _deck.Add(new Card("Jack", "Spades"));
-            _deck.Add(new Card("Queen", "Spades"));
-            _deck.Add(new Card("King", "Spades"));
-            _deck.Add(new Card("Ace", "Spades"));
-            _deck.Add(new Card("2", "Clubs"));
-            _deck.Add(new Card("3", "Clubs"));
-            _deck.Add(new Card("4", "Clubs"));
-            _deck.Add(new Card("5", "Clubs"));
-            _deck.Add(new Card("6", "Clubs"));
-            _deck.Add(new Card("7", "Clubs"));
-            _deck.Add(new Card("8", "Clubs"));
-            _deck.Add(new Card("9", "Clubs"));
-            _deck.Add(new Card("10", "Clubs"));
-            _deck.Add(new Card("Jack", "Clubs"));
-            _deck.Add(new Card("Queen", "Clubs"));
-            _deck.Add(new Card("King", "Clubs"));
-            _deck.Add(new Card("Ace", "Clubs"));
-        }
-
-        public void ShowHand()
-        {
-            foreach (Card card in _hand)
-            {
-                Console.WriteLine(card.Name + " " + card.Suits);
-            }
-        }
-
-        public void IssueCard(int attemps)
+        public void Game()
         {
             const string Exit = "exit";
+            const string Show = "show";
             bool exit = false;
             string userChoice;
+            byte numberCards = 52;
 
             while (exit == false)
             {
-                Console.WriteLine("Чтобы взять карту, нажмите Enter\nЕсли вам достаточно карт, введите: " + Exit + "\nосталось попыток: " + attemps);
+                Console.Clear();
+                Console.WriteLine("Чтобы взять карту, нажмите Enter\nЕсли вам достаточно карт, введите: " +
+                    Exit + "\nЧтобы посмотреть руку, введите: " + Show + "\nВ колоде осталось: " +
+                    numberCards + " карт");
                 userChoice = Console.ReadLine();
 
-                if (attemps-- > 0)
+                if (numberCards-- > 0)
                 {
                     switch (userChoice)
                     {
                         default:
-                            TakeCards();
+                            player.TakeCards(deck.RemoveCard());
+                            break;
+
+                        case Show:
+                            player.ShowHand();
+                            exit = true;
                             break;
 
                         case Exit:
@@ -116,28 +50,45 @@ internal class Program
                 }
                 else
                 {
-                    Console.WriteLine("У вас закончились попытки");
+                    Console.WriteLine("В колоде нет карт");
+                    Console.WriteLine("Ваша рука: ");
+                    player.ShowHand();
                     exit = true;
                 }
             }
         }
+    }
 
-        public void TakeCards()
+    class Deck
+    {
+        private Random _random = new Random();
+        private List<Card> _deck = new List<Card>();
+
+        public Deck()
         {
-            bool isTake = false;
-            int firstIndexCard = 0;
-            int lastIndexCard = 52;
+            _deck = new List<Card>();
+            AddCards();
+        }
 
-            while (isTake == false)
+        private void AddCards()
+        {
+            string[] name = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace" };
+            string[] suits = { "Hearts", "Diamonds", "Spades", "Clubs" };
+
+            for (int i = 0; i < suits.Length; i++)
             {
-                Card currentCard = _deck[random.Next(firstIndexCard, lastIndexCard)];
-
-                if (_hand.Contains(currentCard) == false)
+                for (int j = 0; j < name.Length; j++)
                 {
-                    _hand.Add(currentCard);
-                    isTake = true;
+                    _deck.Add(new Card(name[j], suits[i]));
                 }
             }
+        }
+
+        public Card RemoveCard()
+        {
+            Card currentCard = _deck[_random.Next(0, _deck.Count)];
+            _deck.Remove(currentCard);
+            return currentCard;
         }
     }
 
@@ -155,11 +106,24 @@ internal class Program
 
     class Player
     {
-        public int Attemps { get; private set; }
+        private List<Card> _hand = new List<Card>();
 
         public Player()
         {
-            Attemps = 5;
+            _hand = new List<Card>();
+        }
+
+        public void TakeCards(Card currentCard)
+        {
+            _hand.Add(currentCard);
+        }
+
+        public void ShowHand()
+        {
+            foreach (Card card in _hand)
+            {
+                Console.WriteLine(card.Name + " " + card.Suits);
+            }
         }
     }
 }
