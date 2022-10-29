@@ -18,11 +18,11 @@ internal class Program
         {
             const string Exit = "exit";
             const string Show = "show";
-            bool exit = false;
+            bool isExit = false;
             string userChoice;
             byte numberCards = 52;
 
-            while (exit == false)
+            while (isExit == false)
             {
                 Console.Clear();
                 Console.WriteLine("Чтобы взять карту, нажмите Enter\nЕсли вам достаточно карт, введите: " +
@@ -40,11 +40,11 @@ internal class Program
 
                         case Show:
                             player.ShowHand();
-                            exit = true;
+                            isExit = true;
                             break;
 
                         case Exit:
-                            exit = true;
+                            isExit = true;
                             break;
                     }
                 }
@@ -53,7 +53,7 @@ internal class Program
                     Console.WriteLine("В колоде нет карт");
                     Console.WriteLine("Ваша рука: ");
                     player.ShowHand();
-                    exit = true;
+                    isExit = true;
                 }
             }
         }
