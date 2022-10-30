@@ -35,7 +35,7 @@ internal class Program
                     switch (userChoice)
                     {
                         default:
-                            player.TakeCards(deck.RemoveCard());
+                            player.TakeCards(deck.IssueCard());
                             break;
 
                         case Show:
@@ -84,7 +84,7 @@ internal class Program
             }
         }
 
-        public Card RemoveCard()
+        public Card IssueCard()
         {
             Card currentCard = _deck[_random.Next(0, _deck.Count)];
             _deck.Remove(currentCard);
