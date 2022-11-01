@@ -11,8 +11,8 @@ internal class Program
 
     class Croupier
     {
-        Player player = new Player();
-        Deck deck = new Deck();
+        private Player _player = new Player();
+        private Deck _deck = new Deck();
 
         public void Game()
         {
@@ -20,26 +20,24 @@ internal class Program
             const string Show = "show";
             bool isExit = false;
             string userChoice;
-            byte numberCards = 52;
 
             while (isExit == false)
             {
                 Console.Clear();
                 Console.WriteLine("Чтобы взять карту, нажмите Enter\nЕсли вам достаточно карт, введите: " +
-                    Exit + "\nЧтобы посмотреть руку, введите: " + Show + "\nВ колоде осталось: " +
-                    numberCards + " карт");
+                    Exit + "\nЧтобы посмотреть руку, введите: " + Show);
                 userChoice = Console.ReadLine();
 
-                if (numberCards-- > 0)
+                if (_deck.NumberCards())
                 {
                     switch (userChoice)
                     {
                         default:
-                            player.TakeCards(deck.IssueCard());
+                            _player.TakeCard(_deck.GiveCard());
                             break;
 
                         case Show:
-                            player.ShowHand();
+                            _player.ShowHand();
                             isExit = true;
                             break;
 
@@ -52,7 +50,7 @@ internal class Program
                 {
                     Console.WriteLine("В колоде нет карт");
                     Console.WriteLine("Ваша рука: ");
-                    player.ShowHand();
+                    _player.ShowHand();
                     isExit = true;
                 }
             }
@@ -72,19 +70,24 @@ internal class Program
 
         private void AddCards()
         {
-            string[] name = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace" };
+            string[] names = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace" };
             string[] suits = { "Hearts", "Diamonds", "Spades", "Clubs" };
 
             for (int i = 0; i < suits.Length; i++)
             {
-                for (int j = 0; j < name.Length; j++)
+                for (int j = 0; j < names.Length; j++)
                 {
-                    _deck.Add(new Card(name[j], suits[i]));
+                    _deck.Add(new Card(names[j], suits[i]));
                 }
             }
         }
 
-        public Card IssueCard()
+        public bool NumberCards()
+        {
+            return _deck.Count > 0;
+        }
+
+        public Card GiveCard()
         {
             Card currentCard = _deck[_random.Next(0, _deck.Count)];
             _deck.Remove(currentCard);
@@ -113,7 +116,7 @@ internal class Program
             _hand = new List<Card>();
         }
 
-        public void TakeCards(Card currentCard)
+        public void TakeCard(Card currentCard)
         {
             _hand.Add(currentCard);
         }
@@ -122,8 +125,9 @@ internal class Program
         {
             foreach (Card card in _hand)
             {
-                Console.WriteLine(card.Name + " " + card.Suits);
+                Console.WriteLine(card.Name + " " + card.Suits);                
             }
+            Console.ReadKey();
         }
     }
 }
