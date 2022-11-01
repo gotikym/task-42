@@ -6,7 +6,7 @@ internal class Program
     static void Main(string[] args)
     {
         Croupier croupier = new Croupier();
-        croupier.Game();
+        croupier.Play();
     }
 
     class Croupier
@@ -14,7 +14,7 @@ internal class Program
         private Player _player = new Player();
         private Deck _deck = new Deck();
 
-        public void Game()
+        public void Play()
         {
             const string Exit = "exit";
             const string Show = "show";
@@ -28,7 +28,7 @@ internal class Program
                     Exit + "\nЧтобы посмотреть руку, введите: " + Show);
                 userChoice = Console.ReadLine();
 
-                if (_deck.NumberCards())
+                if (_deck.CountCards())
                 {
                     switch (userChoice)
                     {
@@ -60,11 +60,11 @@ internal class Program
     class Deck
     {
         private Random _random = new Random();
-        private List<Card> _deck = new List<Card>();
+        private List<Card> _cards = new List<Card>();
 
         public Deck()
         {
-            _deck = new List<Card>();
+            _cards = new List<Card>();
             AddCards();
         }
 
@@ -77,20 +77,20 @@ internal class Program
             {
                 for (int j = 0; j < names.Length; j++)
                 {
-                    _deck.Add(new Card(names[j], suits[i]));
+                    _cards.Add(new Card(names[j], suits[i]));
                 }
             }
         }
 
-        public bool NumberCards()
+        public bool CountCards()
         {
-            return _deck.Count > 0;
+            return _cards.Count > 0;
         }
 
         public Card GiveCard()
         {
-            Card currentCard = _deck[_random.Next(0, _deck.Count)];
-            _deck.Remove(currentCard);
+            Card currentCard = _cards[_random.Next(0, _cards.Count)];
+            _cards.Remove(currentCard);
             return currentCard;
         }
     }
